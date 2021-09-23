@@ -1,25 +1,39 @@
 import React from 'react';
 import { useState } from 'react';
 import { ITarefa } from '../../types/Tarefa';
-import styles from './style.module.scss'
+import styles from './style.module.scss';
+import { v4 as uuidv4 } from 'uuid';
 
 interface IFormulario {
-  enviarTarefa: (data: ITarefa) => void;
+  setLista: React.Dispatch<React.SetStateAction<ITarefa[]>>;
 }
 
-let contador = 0
 
-export const Form:React.FC<IFormulario> = props => {
-
+export const Form = ({ setLista }: IFormulario) => {
   const [tarefa, setTarefa] = useState('')
   const [tempo, setTempo] = useState('00:00')
 
   function salvarTarefa(event: React.FormEvent<HTMLFormElement>){
-    event.preventDefault()
-    props.enviarTarefa({tarefa, tempo, id: contador})
-    setTarefa('')
-    setTempo('00:00')
-    contador++
+    event.preventDefault();
+    const novaTarefa = {
+      tarefa,
+      tempo,
+      id: uuidv4()
+    };
+    setLista(listaAnterior => [
+      ...listaAnterior,
+      {
+        ...novaTarefa,
+        completado: false,
+        selecionado: false
+      }
+    ]);
+    resetaFormulario();
+  }
+
+  function resetaFormulario() {
+    setTarefa('');
+    setTempo('00:00');
   }
 
   return (

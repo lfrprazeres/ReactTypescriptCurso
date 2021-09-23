@@ -7,20 +7,19 @@ interface ILista {
   abreItem: (item: ITarefa, index: number) => void
 }
 
-export const Lista:React.FC<ILista> = props => {
+export const Lista = ({ lista, abreItem }: ILista) => {
   return (
     <aside className={styles.listaTarefas}>
       <h2>Estudos do dia</h2>
       <ul>
-        {
-          props.lista.map((item, index) => (
+        {lista.map((item, index) => (
             <Item 
               key={item.id}
               item={item} 
               index={index} 
-              abreItem={props.abreItem}/>
-          ))
-        }
+              abreItem={abreItem}
+            />
+          ))}
       </ul>
     </aside>
   )

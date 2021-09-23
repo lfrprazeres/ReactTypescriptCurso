@@ -5,32 +5,32 @@ import styles from './style.module.scss'
 
 interface ICronometro {
   tempo: number,
-  tempoFinalizado:()=>void
+  tempoFinalizado:() => void
 }
 
-export const Cronometro:React.FC<ICronometro> = props => {
+export const Cronometro = ({ tempoFinalizado, tempo }: ICronometro) => {
   const [rodando, setRodando] = useState<boolean>(false);
   const [tempoRestante, setTempoRestante] = useState<number>(0);
 
   useEffect(() => {
-    setTempoRestante(props.tempo)
-  }, [props.tempo])
+    setTempoRestante(tempo)
+  }, [tempo])
 
   async function iniciaCronometro() {
     setRodando(true);
-    let contador = tempoRestante
+    let contador = tempoRestante;
 
     while (contador > 0){
-      await delay()
+      await delay();
       setTempoRestante(tempoRestante => tempoRestante - 1);
-      contador--
+      contador--;
     }
-    pararCronometro()
+    pararCronometro();
   }
 
   function pararCronometro(){
     setRodando(false);
-    props.tempoFinalizado();
+    tempoFinalizado();
   }
   
   return (
@@ -39,7 +39,7 @@ export const Cronometro:React.FC<ICronometro> = props => {
       <div className={styles.relogioWrapper}>
         <Relogio totalSegundos={tempoRestante}/>
       </div>
-      <button disabled={rodando} onClick={() => iniciaCronometro()}>Começar</button>
+      <button disabled={rodando} onClick={iniciaCronometro}>Começar</button>
     </div>
   )
 }

@@ -7,41 +7,36 @@ import { timeToSeconds } from 'common/utils/date'
 import styles from "./style.module.scss"
 
 export const App = () => {
-
-  const [lista, setLista] = useState<ITarefa[]>([])
-  const [selecionado, setSelecionado] = useState<ITarefa>()
-  const [tempo, setTempo] = useState<number>(0)
-
-  function enviarTarefa(data: ITarefa) {
-    setLista([...lista, { ...data, completado: false, selecionado: false }])
-  }
+  const [lista, setLista] = useState<ITarefa[]>([]);
+  const [idSelecionado, setIdSelecionado] = useState<string>();
+  const [tempo, setTempo] = useState<number>(0);
 
   function selecionaItem(item: ITarefa, index: number) {
-    item.selecionado = true
-    setSelecionado(item)
+    setIdSelecionado(item.id);
     setLista((listaAnterior: ITarefa[]) =>
-      listaAnterior.map((itemAnterior: ITarefa, indexAnterior: number) => (
-        indexAnterior === index ? { ...itemAnterior, selecionado: true } : itemAnterior
-      ))
+      listaAnterior.map((itemAnterior: ITarefa, indexAnterior: number) => {
+        itemAnterior.selecionado = false;
+        if(indexAnterior === index) itemAnterior.selecionado = true;
+        return itemAnterior;
+      })
     )
-    const segundos = timeToSeconds(item.tempo)
-    setTempo(segundos)
+    const segundos = timeToSeconds(item.tempo);
+    setTempo(segundos);
   }
 
   function tarefaFinalizada() {
-    if (selecionado) {
-      const item = selecionado
+    if (idSelecionado) {
       setLista((listaAnterior: ITarefa[]) =>
         listaAnterior.map((itemAnterior: ITarefa) => (
-          itemAnterior.id === item.id ? { ...itemAnterior, selecionado: false, completado: true } : itemAnterior
+          itemAnterior.id === idSelecionado ? { ...itemAnterior, selecionado: false, completado: true } : itemAnterior
         )))
-      setTempo(0)
+      setTempo(0);
     }
   } 
 
   return (
     <div className={styles.AppStyle}>
-      <Form enviarTarefa={enviarTarefa} />
+      <Form setLista={setLista} />
       <Cronometro tempoFinalizado={tarefaFinalizada} tempo={tempo} />
       <Lista lista={lista} abreItem={selecionaItem} />
     </div>
